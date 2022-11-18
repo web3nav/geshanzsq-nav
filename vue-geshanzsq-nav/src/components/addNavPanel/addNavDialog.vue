@@ -68,6 +68,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { addSiteInfo } from '@/api/front/frontNav';
+import { create } from 'ipfs-http-client'
 
 export default {
   name: 'addNavDialog',
@@ -79,6 +80,7 @@ export default {
     },
   },
   data() {
+    const ipfs = create('https://ipfs.infura.io:5001')
     return {
         dialogImageUrl: '',
         dialogVisible: false,
@@ -103,6 +105,7 @@ export default {
             { required: true, message: '请填写活动形式', trigger: 'blur' }
           ]
         },
+        ipfs: ipfs,
     }
   },
   created() {
@@ -128,23 +131,37 @@ export default {
       console.log(file, fileList);
     },
     submit(){
-       this.$refs['ruleForm'].validate((valid) => {
+       this.$refs['ruleForm'].validate(async (valid) => {
           if (valid) {
-            console.log('valid', valid);
             const walletAddress = this.$store.getters.address;
-            const site = {
+            let site = {
               ...this.ruleForm,
               walletAddress,
+            };
+            const buf = new Buffer.from(site.toString());
+            const added = await this.ipfs.add(buf);
+            const ipfsUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+            site = {
+              ...site,
+              ipfsUrl,
             }
             addSiteInfo(site).then(res => {
-              console.log(res);
-              this.closeDialog();
+                console.log(res);
+                this.closeDialog();
             })
           } else {
             console.log('error submit!!');
             return false;
           }
         });
+    },
+    uploadToIPFS(data) {
+      return new Promise(function(resolve, reject) {
+        const result = this.ipfs.add(data)
+        resolve(result);
+      }, (err) => {
+        reject(err);
+      })
     },
   }
 }

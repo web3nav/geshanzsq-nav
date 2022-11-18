@@ -55,7 +55,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2020-2022 nav.geshanzsq.com All Rights Reserved.</span>
+      <span>Copyright © 2020-2022 web3Nav All Rights Reserved.</span>
     </div>
   </div>
 </template>

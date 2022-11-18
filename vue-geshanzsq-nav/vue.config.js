@@ -50,6 +50,7 @@ module.exports = {
         '@': resolve('src'),
       },
     },
+    target: 'web',
   },
   chainWebpack(config) {
     config.plugins.delete('preload'); // TODO: need test

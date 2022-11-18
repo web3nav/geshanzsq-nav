@@ -6,7 +6,7 @@
     <el-container>
       <slot name="card-header"></slot>
       <el-aside class="card-site-aside" style="background-color: white;width: 40px;padding: 0;text-align: center;">
-        <el-image class="aside-image"  :src="baseUrl + site.sitePath" lazy>
+        <el-image class="aside-image"  :src="site.sitePath" lazy>
           <div slot="error" class="image-slot">
             <el-image class="aside-image" :src="baseUrl + defaultSiteImg"/>
           </div>
