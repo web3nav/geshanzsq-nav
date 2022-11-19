@@ -7,7 +7,7 @@
             <search class="search"/>
           </el-col>
         </el-row> -->
-        <addNavPanel></addNavPanel>
+        <addNavPanel @uploadData="uploadData"></addNavPanel>
         <div v-for="menu in siteList">
           <h4 v-if="menu.siteList" :id="'item-' + menu.menuId" :ref="'item-' +menu.menuId">
             <svg-icon icon-class="tag" style="margin-right: 7px;font-size: 18px"/>
@@ -134,6 +134,9 @@
       handleSearch() {
         this.searchOpenDialog = true;
       },
+      uploadData() {
+        this.getFrontNav()
+      }
     }
   }
 </script>

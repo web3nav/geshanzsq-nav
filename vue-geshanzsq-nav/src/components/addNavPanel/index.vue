@@ -6,7 +6,7 @@
         <div class="benefit-add">
             <el-button type="primary" @click="addNav">+添加导航</el-button>
         </div>
-        <add-nav-dialog :showDialog="showAddNavDialog"  @close="closeDialog"></add-nav-dialog>
+        <add-nav-dialog :showDialog="showAddNavDialog" @uploadData="uploadData" @close="closeDialog"></add-nav-dialog>
     </div>
 </template>
 
@@ -26,7 +26,6 @@ import addNavDialog from './addNavDialog.vue';
   methods: {
     addNav() {
       this.getStakerStatus()
-
     },
     async getStakerStatus() {
       if(window.ethereum) {
@@ -49,8 +48,11 @@ import addNavDialog from './addNavDialog.vue';
       }
     },
     closeDialog() {
-        this.showAddNavDialog = false;
+      this.showAddNavDialog = false;
     },
+    uploadData() {
+      this.$emit('uploadData')
+    }
   },
 }
 </script>

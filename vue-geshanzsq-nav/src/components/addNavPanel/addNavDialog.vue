@@ -9,9 +9,9 @@
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  class="ruleForm">
           <el-form-item label="请选择你要添加的导航分类" prop="menuId">
             <el-select v-model="ruleForm.menuId">
-              <el-option v-for="nav in menus" 
-              :key="nav.menuId" 
-              :label="nav.menuName" 
+              <el-option v-for="nav in menus"
+              :key="nav.menuId"
+              :label="nav.menuName"
               :value="nav.menuId"></el-option>
              </el-select>
           </el-form-item>
@@ -115,7 +115,7 @@ export default {
   computed: {
     ...mapGetters(['menus'])
   },
-  methods: { 
+  methods: {
     closeDialog() {
       this.$refs['ruleForm'].resetFields();
       this.$emit('close');
@@ -139,8 +139,9 @@ export default {
               walletAddress,
             };
             const buf = new Buffer.from(site.toString());
-            const added = await this.ipfs.add(buf);
-            const ipfsUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+            // const added = await this.ipfs.add(buf);
+            // const ipfsUrl = `https://ipfs.infura.io/ipfs/${added.path}`
+            const ipfsUrl = `https://ipfs.infura.io/ipfs/`
             site = {
               ...site,
               ipfsUrl,
@@ -148,6 +149,7 @@ export default {
             addSiteInfo(site).then(res => {
                 console.log(res);
                 this.closeDialog();
+                this.$emit('uploadData')
             })
           } else {
             console.log('error submit!!');
