@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+import "hardhat/console.sol";
 /**
  * @title 质押合约
  */
@@ -15,7 +16,7 @@ contract Staker {
     mapping(address => bool) public blackList;
 
     // 质押完成门槛
-    uint public constant threshold = 0.001 ether;
+    uint public constant threshold = 1 gwei;
 
     uint public totalStackAmt;
 
