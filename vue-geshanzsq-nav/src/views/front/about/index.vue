@@ -11,7 +11,9 @@
           <div class="reward">
             <p style="margin-bottom: 12px;">作品累计点击量: {{ profit }}</p>
             <div>
-              <p>可换取收益: {{ profit / 5 }}Nav</p>
+              <el-tooltip class="item" effect="dark" :content="'(总点击量(' + profit + ') - 已领取收益(' + hasMintRedNum + ')) ÷ 5'" placement="top">
+                <p>可换取收益: {{ acutalIncome }}Nav</p>
+              </el-tooltip>
               <el-button :disabled="!stackStatus" @click="getReward">领取收益</el-button>
             </div>
             <div style="text-align:center">
@@ -116,6 +118,7 @@
         siteList: [],
         dialogVisible: false,
         innerVisible: false,
+        hasMintRedNum: 0,
         profit: 0
       }
     },
@@ -127,6 +130,10 @@
       isMobile() {
         return this.device === 'mobile';
       },
+      acutalIncome() {
+        let income = (this.profit - this.hasMintRedNum) / 5
+        return income < 0 ? 0 : income
+      }
     },
     created() {
       this.getFrontMenu();
@@ -140,13 +147,28 @@
         })
       },
       async getReward() {
-        let distributContract =  new this.web3.eth.Contract(NavReward.abi, this.rewardAddress, {
-          from: this.address
-        })
-        let response = await distributContract.methods.mintNav(this.address).send({from: this.address})
-        console.log(response, "_distributContract_")
-        this.$message.success('提现成功')
-        // let rest = await distributContract.methods.requestVolumeData().send({from: this.address})
+        if (this.profit === this.hasMintRedNum) {
+          this.$message.warning('你的可提现收益为0')
+        } else {
+          let distributContract = new this.web3.eth.Contract(NavReward.abi, this.rewardAddress, {from: this.address})
+          distributContract.methods.mintNav(this.address).send({from: this.address})
+            .on('transactionHash', (hash) => {
+                  this.loading = true
+              })
+            .on('receipt', (receipt) => {
+              if (receipt.status) {
+                this.loading = false
+                this.$message.success('提取成功，请稍后查看你的钱包余额')
+
+                setTimeout(() => {
+                  this.getReceived()
+                }, 7000);
+              } else {
+                this.loading = false
+                this.$message.success('提取失败')
+              }
+            })
+        }
       },
       async staker() {
         if(window.ethereum) {
@@ -207,6 +229,7 @@
           this.getStakerStatus()
           this.getUserNavList()
           this.getUserProfit()
+          this.getReceived()
         }
       },
       async cancelStaker() {
@@ -218,8 +241,9 @@
           .on('receipt', (receipt) => {
             if (receipt.status) {
               this.loading = false
-              this.getStakerStatus()
               this.$message.success('解除成功')
+              this.stackStatus = false
+              // this.getStakerStatus()
             } else {
               this.loading = false
               this.$message.success('解除失败')
@@ -246,7 +270,7 @@
         }
         getUserClickCount(params).then(response => {
           if (response.code == 200) {
-            this.profit = response.data
+            this.profit = response.data || 0
           }
         }).catch(error => {
         })
@@ -261,31 +285,21 @@
         }
 
       },
+      async getReceived() {
+        let distributContract =  new this.web3.eth.Contract(NavReward.abi, this.rewardAddress, {
+          from: this.address
+        })
+        this.hasMintRedNum = await distributContract.methods.hasMintRedNum(this.address).call()
+      },
       handleClose() {
-        console.log("handleClose")
+        this.dialogVisible = false
       },
       showStakerDialog() {
         this.dialogVisible = true
       },
       goStaker() {
         this.innerVisible = true
-      },
-      blockSubscribe() {
-        this.subscription = web3.eth.subscribe('logs', {
-            address: '0x123456..',
-            topics: ['0x12345...']
-        }, function(error, result){
-            if (!error)
-                console.log(result);
-        })
-      },
-      blockUnSubscribe() {
-        this.subscription.unsubscribe(function(error, success){
-            if(success) {
-              console.log('Successfully unsubscribed!');
-            }
-        });
-      },
+      }
     },
     mounted() {
       this.getUserBalance()

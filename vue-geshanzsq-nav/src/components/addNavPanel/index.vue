@@ -6,11 +6,12 @@
         <div class="benefit-add">
             <el-button type="primary" @click="addNav">+添加导航</el-button>
         </div>
-        <add-nav-dialog :showDialog="showAddNavDialog"  @close="closeDialog"></add-nav-dialog>
+        <add-nav-dialog :showDialog="showAddNavDialog" @uploadData="uploadData" @close="closeDialog"></add-nav-dialog>
     </div>
 </template>
 
 <script>
+import Web3 from 'web3'
 import Staker from '@/api/abi/Staker.json';
 import addNavDialog from './addNavDialog.vue';
   export default {
@@ -24,12 +25,7 @@ import addNavDialog from './addNavDialog.vue';
   },
   methods: {
     addNav() {
-      let status = this.getStakerStatus()
-      if (status) {
-        this.$message.error('请到个人中心完成质押')
-      } else {
-        this.showAddNavDialog = true;
-      }
+      this.getStakerStatus()
     },
     async getStakerStatus() {
       if(window.ethereum) {
@@ -41,14 +37,22 @@ import addNavDialog from './addNavDialog.vue';
         let status = await this.stakerContract.methods.getUserStackStatus().call({
           from: this.address
         })
+        if (status) {
+          this.showAddNavDialog = true;
+        } else {
+          this.$message.error('请到个人中心完成质押')
+        }
         return status
       } else {
-        return false
+        this.$message.error('请到个人中心完成质押')
       }
     },
     closeDialog() {
-        this.showAddNavDialog = false;
+      this.showAddNavDialog = false;
     },
+    uploadData() {
+      this.$emit('uploadData')
+    }
   },
 }
 </script>
