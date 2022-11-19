@@ -1,8 +1,8 @@
 
 
-# 格web3导航网站
+# web3导航网站
 
-一个基于 Spring Boot + Vue 前后端分离的导航网站系统，在线演示地址：[https://gesdh.cn](https://gesdh.cn)
+一个基于gesdh导航网站系统进行web3改造的混合型DAPP，帮助更多人进入web3，通过贡献作品来获取链上奖励。在线演示地址：[http://43.154.22.73:81/]
 
 
 ## 运行
@@ -143,14 +143,4 @@ server {
 
 ```
 
-## License
-
-Copyright © 2020-2022 **[格姗知识圈导航](https://gesdh.cn)** Released under the **MIT License**.
-
-> 注：本导航开源的目的是大家能够在本站的基础之上有所启发，做出更多新的东西，比如自定义导航。并不是让大家照搬所有代码。 如果你使用这个开源项目，请**注明**本项目开源地址。
-
-## 感谢
-
-若依后台管理系统：[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)
-
-花裤衩：[vue-element-admin](https://gitee.com/panjiachen/vue-element-admin)
+> 原项目开源地址[格姗知识圈导航](https://gesdh.cn)。
